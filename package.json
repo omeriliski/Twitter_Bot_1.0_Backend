@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "start": "node app"
+    "start": "nodemon app"
   },
   "dependencies": {
     "axios": "^0.27.2",
