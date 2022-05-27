@@ -5,8 +5,9 @@ import axios from "axios";
 const twitRouter = express.Router();
 
 twitRouter.post("/followPopular",(req,res)=>{
-    const T = init(req.body);
-    let userIdsArr = req.body.popularAccountsList.map(e=>e.id_str);
+    const T = init(req.body.user);
+    let userIdsArr=[]
+    if(req.body.listenAll) userIdsArr = req.body.user.popularAccountsList.map(e=>e.id_str);
     console.log('userIdsArr :>> ', userIdsArr);
     if(userIdsArr.length>0){
         try {
