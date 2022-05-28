@@ -3,29 +3,47 @@ import {init} from "../lib/twit.js";
 import axios from "axios";
 
 const twitRouter = express.Router();
-
+let stream = null; 
 twitRouter.post("/followPopular",(req,res)=>{
-    const T = init(req.body.user);
-    let userIdsArr=[]
-    if(req.body.listenAll) userIdsArr = req.body.user.popularAccountsList.map(e=>e.id_str);
-    console.log('userIdsArr :>> ', userIdsArr);
-    if(userIdsArr.length>0){
-        try {
-                let stream = T.stream('statuses/filter', {follow: userIdsArr})
-                stream.on('tweet', function (tweet,err) {
-                        if(userIdsArr.includes(tweet.user.id_str)){
-                                T.post('statuses/retweet/:id', { id: tweet.id_str }, function (err, data, response) {
-                                        console.log('retweeted :>>>>>>> ');
-                                        // res.send("retweeted")
-                                        //    retweet(tweet.id_str,T);
+        const T = init(req.body.user);
+        console.log('req.body.isListen :>> ', req.body.isListen);
+        
+        let userIdsArr = req.body.user.popularAccountsList.map(e=>e.id_str)
+        
+        console.log('userIdsArr :>> ', userIdsArr);
+        //     if(userIdsArr.length>0){
+                try {
+                        if(req.body.isListen){
+                                stream = T.stream('statuses/filter', {follow: userIdsArr});
+                                stream.on('tweet', function (tweet,err) {
+                                        if(userIdsArr.includes(tweet.user.id_str)){
+                                                T.post('statuses/retweet/:id', { id: tweet.id_str }, function (err, data, response) {
+                                                        console.log('retweeted :>>>>>>> ');
+                                                        // res.send("retweeted")
+                                                        //    retweet(tweet.id_str,T);
+                                                })
+                                        }
+                                        else console.log("refused")
                                 })
                         }
-                        else console.log("refused")
-                })
-        } catch (error) {
-                console.log("followPopular",error);
-        }
-    }
+                        else{
+                                // stream=null;
+                                // console.log('stream :>> ', stream);
+                                // console.log('remove :>> ');
+                                stream.stop();
+                                // stream.removeListener("on",()=>{
+                                //         console.log("strem is not listening!")
+                                // });
+                                // stream.removeAllListeners("on");
+                                stream.on('disconnect', function (disconnectMessage) {
+                                        console.log('disconnect---------- :>> ',disconnectMessage);
+                                      })
+                        } 
+                // else stream.set("Connection", "close");
+                } catch (error) {
+                        console.log("followPopular",error);
+                }
+//     }
 })
 
 // it gets the details of popular accounts
