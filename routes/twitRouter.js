@@ -19,7 +19,8 @@ twitRouter.post("/followPopular",(req,res)=>{
                                         if(userIdsArr.includes(tweet.user.id_str)){
                                                 T.post('statuses/retweet/:id', { id: tweet.id_str }, function (err, data, response) {
                                                         console.log('retweeted :>>>>>>> ');
-                                                        // res.send("retweeted")
+                                                        stream.stop();
+                                                        res.send("retweeted")
                                                         //    retweet(tweet.id_str,T);
                                                 })
                                         }
@@ -48,7 +49,7 @@ twitRouter.post("/followPopular",(req,res)=>{
 
 // it gets the details of popular accounts
 twitRouter.post("/getDetails",(req,res)=>{
-        console.log('req.body.value :>> ', req.body.value);
+        // console.log('req.body.value :>> ', req.body.value);
         const url=`https://api.twitter.com/1.1/users/lookup.json?screen_name=${req.body.value}`
         axios.get(url,
                 {headers:
