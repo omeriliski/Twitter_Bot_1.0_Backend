@@ -21,9 +21,16 @@ const userSchema = new Schema({
     rtCount:{type:Number},
     likeCount:{type:Number},
     followCount:{type:Number},
-    retweetedCount:{type:Number},
-    likedCount:{type:Number},
-    followedCount:{type:Number},
+    daily:{
+        retweetedCount:{type:Number},
+        likedCount:{type:Number},
+        followedCount:{type:Number},
+    },
+    weekly:{
+        retweetedCount:{type:Number},
+        likedCount:{type:Number},
+        followedCount:{type:Number},
+    },
     popularAccountsList:{type:[popularAccountSchema]},
     hashtagList:{type:Array}
 })
